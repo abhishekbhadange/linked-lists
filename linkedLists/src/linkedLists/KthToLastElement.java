@@ -19,7 +19,7 @@ public class KthToLastElement {
 			System.out.println("Error: Empty list! exiting...");
 			System.exit(0);
 		}
-		if(k < 0){
+		if(k < 0) {
 			System.out.println("Error: k < 0! exiting...");
 			System.exit(0);
 		}
@@ -30,7 +30,7 @@ public class KthToLastElement {
 			runner = runner.next;
 			m++;
 		}
-		if(runner.next == null){
+		if(runner.next == null) {
 			System.out.println("Error: k's value is equal to or greater than the Linked List size! exiting...");
 			System.exit(0);
 		}
