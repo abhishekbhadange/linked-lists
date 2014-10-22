@@ -13,7 +13,7 @@ public class NodeList {
 				temp = temp.next;
 			temp.next = n;
 		}
-		return head;
+		return n;
 	}
 	public void printList() {
 		Node n = head;
