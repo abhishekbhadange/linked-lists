@@ -13,7 +13,7 @@ public class ReverseAddition {
 		list2.insert(5);
 		list2.insert(9);
 		list2.insert(2);
-		Node n = reverseAddition(list1.getHead(), list2.getHead());
+		Node n = reverseAddition(list1.getHead(), list2.getHead(), 0);
 		n.printNode();
 		while(n.next != null) {
 			n.next.printNode();
@@ -36,55 +36,76 @@ public class ReverseAddition {
 		}
 		System.out.println("");
 	}
-	public static Node reverseAddition(Node head1, Node head2) {
-		if(head1 == null || head2 == null)
+	public static Node reverseAddition(Node head1, Node head2, int carry) {
+		if(head1 == null && head2 == null && carry == 0)
 			return null;
-		StringBuilder sb1 = new StringBuilder();
-		while(head1 != null) {
-			sb1.append(head1.data);
-			head1 = head1.next;
+		int value = carry;
+		if(head1 != null)
+			value += head1.data;
+		if(head2 != null)
+			value += head2.data;
+		Node result = new Node(value % 10);
+		if(head1 != null || head2 != null) {
+			Node temp = reverseAddition(head1 == null ? null : head1.next,
+										head2 == null ? null : head2.next,
+										value >= 10 ? 1 : 0);
+			result.next = temp;
 		}
-		StringBuilder sb2 = new StringBuilder();
-		while(head2 != null) {
-			sb2.append(head2.data);
-			head2 = head2.next;
-		}
-		int value1 = Integer.valueOf(sb1.reverse().toString());
-		int value2 = Integer.valueOf(sb2.reverse().toString());
-		int result = value1 + value2;
-		String res = String.valueOf(result);
-		Node tail = new Node(Character.getNumericValue(res.charAt(0)));
-		for(int i = 1; i < res.length(); i++) {
-			Node temp = new Node(Character.getNumericValue(res.charAt(i)));
-			temp.next = tail;
-			tail = temp;
-		}
-		return tail;
+		return result;
+	}
+	public static class PartialSum {
+		Node sum = null;
+		int carry = 0;
 	}
 	public static Node forwardAddition(Node head1, Node head2) {
-		if(head1 == null || head2 == null)
-			return null;
-		StringBuilder sb1 = new StringBuilder();
-		while(head1 != null) {
-			sb1.append(head1.data);
-			head1 = head1.next;
+		int len1 = length(head1);
+		int len2 = length(head2);
+		if(len1 < len2)
+			head1 = padList(head1, len2 - len1);
+		else
+			head2 = padList(head2, len1 - len2);
+		PartialSum ps = addLists(head1, head2);
+		if(ps.carry == 0)
+			return ps.sum;
+		else {
+			Node n = insertBefore(ps.sum, ps.carry);
+			return n;
 		}
-		StringBuilder sb2 = new StringBuilder();
-		while(head2 != null) {
-			sb2.append(head2.data);
-			head2 = head2.next;
+	}
+	public static int length(Node head) {
+		int counter = 0;
+		if(head == null)
+			return 0;
+		while(head != null) {
+			counter++;
+			head = head.next;
 		}
-		int value1 = Integer.valueOf(sb1.toString());
-		int value2 = Integer.valueOf(sb2.toString());
-		int result = value1 + value2;
-		String res = String.valueOf(result);
-		Node n = new Node(Character.getNumericValue(res.charAt(0)));
-		Node head = n;
-		for(int i = 1; i < res.length(); i++) {
-			Node temp = new Node(Character.getNumericValue(res.charAt(i)));
-			n.next = temp;
-			n = temp;
+		return counter;
+	}
+	public static Node padList(Node head, int count) {
+		for(int i = 0; i < count; i++) {
+			Node n = new Node(0);
+			n.next = head;
+			head = n;
 		}
 		return head;
+	}
+	public static PartialSum addLists(Node head1, Node head2) {
+		if(head1 == null && head2 == null) {
+			PartialSum ps = new PartialSum();
+			return ps;
+		}
+		PartialSum ps = addLists(head1.next, head2.next);
+		int value = ps.carry + head1.data + head2.data;
+		Node fullResult = insertBefore(ps.sum, value % 10);
+		ps.sum = fullResult;
+		ps.carry = value / 10;
+		return ps;
+	}
+	public static Node insertBefore(Node head, int value) {
+		Node n = new Node(value);
+		if(head != null) 
+			n.next = head;
+		return n;
 	}
 }
