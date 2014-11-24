@@ -7,13 +7,13 @@ import java.util.HashSet;
 public class RemoveDuplicates {
 	public static void main(String[] args) {
 		NodeList list = new NodeList();
-		list.insert(12);
-		list.insert(5);
+		list.insert(1);
+		list.insert(1);
 		list.insert(9);
 		list.insert(3);
-		list.insert(12);
-		list.insert(9);
 		list.insert(15);
+		list.insert(9);
+		list.insert(12);
 		System.out.println("Original: ");
 		list.printList();
 		removeDuplicates(list);
@@ -34,17 +34,14 @@ public class RemoveDuplicates {
 		}
 		Node n = list.getHead();
 		HashSet<Integer> set = new HashSet<Integer>();
-		if(n != null)
-			set.add(n.data);
-		else
-			System.out.println("Error: Null head!");
-		while(n.next != null) {
-			if(set.contains(n.next.data)) {
-				Node temp = list.delete(n.next.data);
-				list.setHead(temp);
+		Node previous = null;
+		while(n != null) {
+			if(set.contains(n.data))
+				previous.next = n.next;
+			else {
+				set.add(n.data);
+				previous = n;
 			}
-			else
-				set.add(n.next.data);
 			n = n.next;
 		}
 	}
