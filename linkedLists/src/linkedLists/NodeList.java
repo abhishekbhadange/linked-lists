@@ -1,7 +1,7 @@
 package linkedLists;
 
 public class NodeList {
-	private Node head;
+	Node head;
 	public NodeList() {}
 	public Node insert(int data) {
 		Node n = new Node(data);
